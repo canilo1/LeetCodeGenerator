@@ -5,7 +5,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { Answer } = body;
+    const { Answer,Problem } = body;
 
     if (!Answer) {
       return new Response(JSON.stringify({ error: "No answer provided" }), {
@@ -17,8 +17,7 @@ export async function POST(req) {
     const prompt = `
 You are an expert software engineer and coding interviewer.
 Here is a candidate's solution attempt:
-
-"${Answer}"
+This is the "${Problem} and this is their "${Answer}"
 
 Please provide structured feedback:
 1. Correctness — does it solve the problem?
