@@ -8,8 +8,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowDown, CircleUserRoundIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function LCSIDEBAR({ handlePage }) {
+
+
+
+export default function MobileSideBar({ handlePage }) {
   const items = [
     { title: "2-Pointers", description: "Use two moving indexes to compare or traverse data efficiently." },
     { title: "Sliding Window", description: "Maintain a window of elements that slides over the data to find subarrays or substrings satisfying certain conditions." },
@@ -29,11 +33,8 @@ export default function LCSIDEBAR({ handlePage }) {
   ];
 
   return (
-    <UISidebar className="flex-shrink-0 w-full h-full p-3 bg-transparent">
-      <SidebarHeader className="font-medium text-zinc-200">LeetCode Patterns</SidebarHeader>
-
-      <SidebarContent className="flex flex-col gap-1 overflow-y-auto h-[calc(100vh-64px)]">
-        {items.map((item) => (
+    <>
+         {items.map((item) => (
           <Accordion type="single" collapsible key={item.title}>
             <AccordionItem value={item.title}>
               <AccordionTrigger
@@ -41,17 +42,14 @@ export default function LCSIDEBAR({ handlePage }) {
                 onClick={() => handlePage(item.title)}
               >
                 <h1 className="font-medium text-zinc-100">{item.title}</h1>
-                <ArrowDown className="w-4 h-4 text-zinc-400" />
+        
               </AccordionTrigger>
               <AccordionContent className="pl-4 text-zinc-400 text-sm">{item.description}</AccordionContent>
             </AccordionItem>
           </Accordion>
         ))}
-      </SidebarContent>
+        </>
+     
 
-      <SidebarFooter className="flex items-center gap-2 text-sm text-zinc-300 mt-auto">
-        <CircleUserRoundIcon className="w-5 h-5" />
-      </SidebarFooter>
-    </UISidebar>
   );
 }

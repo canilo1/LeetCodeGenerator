@@ -16,31 +16,29 @@ import { Textarea } from "@/components/ui/textarea";
 import { handleGeneration, handleAdvice } from "../Generate";
 
 export default function LeetCodePage({ selectedPage }) {
-  const [GenerationLoading, setGenerationLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [question, setQuestion] = useState("");
-  const [Difficulty, setDifficulty] = useState("");
+  const [difficulty, setDifficulty] = useState("");
   const [answer, setAnswer] = useState("");
   const [advice, setAdvice] = useState("");
 
-  const handleDifficulty = (difficulty) => setDifficulty(difficulty);
-
   if (!selectedPage) {
     return (
-      <div className="flex flex-1 justify-center items-center bg-sky-950 p-6 text-center">
+      <div className="flex justify-center items-center h-full p-6">
         <Button>Please select a Page</Button>
       </div>
     );
   }
 
   return (
-    <main className="flex flex-col gap-6 overflow-y-auto bg-sky-950 p-[clamp(0.75rem,2vw,1.5rem)] min-h-full transition-all duration-300">
+    <main className="flex flex-col gap-6 p-6 text-white flex-1 h-full overflow-y-auto bg-zinc-900">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-        <h1 className="font-semibold text-zinc-100 text-[clamp(1rem,2vw,1.5rem)]">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-1">
+        <h1 className="font-semibold text-lg sm:text-xl">
           Pattern: {selectedPage}
         </h1>
-        <Select onValueChange={handleDifficulty}>
-          <SelectTrigger className="min-w-[140px] sm:w-[200px]">
+        <Select onValueChange={setDifficulty}>
+          <SelectTrigger className="w-48">
             <SelectValue placeholder="Select Difficulty" />
           </SelectTrigger>
           <SelectContent>
@@ -54,68 +52,51 @@ export default function LeetCodePage({ selectedPage }) {
         </Select>
       </div>
 
-      {/* Responsive content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(0.75rem,2vw,1.5rem)] w-full max-w-[1600px] mx-auto">
-        {/* Question Section */}
-        <Card className="bg-zinc-900 border border-zinc-800 text-zinc-200 p-[clamp(1rem,2vw,1.5rem)] rounded-2xl shadow-md flex flex-col gap-4">
+      {/* Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0">
+        {/* Question */}
+        <Card className="bg-zinc-800 flex flex-col gap-4 p-4 flex-1 min-h-[300px]">
           <Textarea
-            className="bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder:text-zinc-400 
-              focus:border-zinc-600 focus:ring-zinc-600 
-              resize-none 
-              min-h-[120px] max-h-[calc(100vh-280px)] w-full"
             placeholder="Question will appear here..."
             value={question}
             readOnly
+            className="resize-none flex-1 text-white placeholder:text-zinc-500"
           />
           <Button
-            className="bg-zinc-700 hover:bg-zinc-600 text-zinc-100 transition-all duration-300"
             onClick={() => {
-              if (selectedPage && Difficulty) {
+              if (selectedPage && difficulty) {
                 handleGeneration({
-                  setGenerationLoading,
+                  setGenerationLoading: setLoading,
                   setQuestion,
                   Pattern: selectedPage,
-                  Difficulty,
+                  Difficulty: difficulty,
                 });
-              } else {
-                alert("Please select a difficulty first.");
-              }
+              } else alert("Select a difficulty first.");
             }}
           >
-            {GenerationLoading ? "Generating..." : "Generate Question"}
+            {loading ? "Generating..." : "Generate Question"}
           </Button>
         </Card>
 
-        {/* Answer Section */}
-        <Card className="bg-zinc-900 border border-zinc-800 text-zinc-200 p-[clamp(1rem,2vw,1.5rem)] rounded-2xl shadow-md flex flex-col gap-4">
+        {/* Answer */}
+        <Card className="bg-zinc-800 flex flex-col gap-4 p-4 flex-1 min-h-[300px]">
           <Textarea
-            className="bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder:text-zinc-400 
-              focus:border-zinc-600 focus:ring-zinc-600 
-              resize-none 
-              min-h-[120px] max-h-[200px] w-full"
+            placeholder="Type your answer here..."
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
-            placeholder="Type your answer here..."
+            className="resize-none flex-1 text-white placeholder:text-zinc-500"
           />
-
           <Textarea
-            className="bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder:text-zinc-400 
-              focus:border-zinc-600 focus:ring-zinc-600 
-              resize-none 
-              min-h-[120px] max-h-[300px] w-full"
             placeholder="AI feedback or advice will appear here..."
-            readOnly
             value={advice}
+            readOnly
+            className="resize-none flex-1 text-white placeholder:text-zinc-500"
           />
-
           <Button
-            className="bg-zinc-700 hover:bg-zinc-600 text-zinc-100 transition-all duration-300"
             onClick={() => {
-              if (question && answer) {
+              if (question && answer)
                 handleAdvice({ setAdvice, question, answer });
-              } else {
-                alert("Please make sure there is both a question and an answer.");
-              }
+              else alert("Make sure there is both a question and an answer.");
             }}
           >
             Submit Answer
