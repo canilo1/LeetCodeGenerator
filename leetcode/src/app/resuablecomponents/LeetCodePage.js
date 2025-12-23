@@ -32,7 +32,6 @@ export default function LeetCodePage({ selectedPage }) {
 
   return (
     <main className="flex flex-col gap-6 p-6 text-white flex-1 h-full overflow-y-auto bg-zinc-900">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-1">
         <h1 className="font-semibold text-lg sm:text-xl">
           Pattern: {selectedPage}
@@ -52,9 +51,8 @@ export default function LeetCodePage({ selectedPage }) {
         </Select>
       </div>
 
-      {/* Content */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0">
-        {/* Question */}
+
         <Card className="bg-zinc-800 flex flex-col gap-4 p-4 flex-1 min-h-[300px]">
           <Textarea
             placeholder="Question will appear here..."
@@ -77,8 +75,6 @@ export default function LeetCodePage({ selectedPage }) {
             {loading ? "Generating..." : "Generate Question"}
           </Button>
         </Card>
-
-        {/* Answer */}
         <Card className="bg-zinc-800 flex flex-col gap-4 p-4 flex-1 min-h-[300px]">
           <Textarea
             placeholder="Type your answer here..."
