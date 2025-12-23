@@ -1,0 +1,3 @@
+Just want to say that, its not scalable just yet with all LAPtops/PCs i am working on fixing that, by the end of next month hopefully 
+(How to use this app?)
+Just click on one of the patterns, then from there you would click on the level of diffiuclty you want, then you would click generate(Might take like a few seconds or 10 idrk) then itll generate a problem for you then simply, on the text area put your code in cick submit, and then you wait like 10 seconds and gbt will give u advice on ur code!Very simple, made this to help me with leetcode problems, hope it helps you out too.
