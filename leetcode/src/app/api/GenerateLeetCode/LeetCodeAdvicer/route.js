@@ -1,11 +1,11 @@
-import  { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
-const model = ai.getGenerativeModel({
-   model: "gemini-2.5-flash",
-})
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+console.log("Using Gemini key:", process.env.GEMINI_API_KEY ? "YES" : "NO");
+
 export async function POST(req) {
   try {
+    console.log("Using Gemini key:", process.env.GEMINI_API_KEY ? "YES" : "NO");
     const body = await req.json();
     const { Answer,Problem } = body;
 
@@ -30,7 +30,7 @@ Please provide structured feedback:
 Keep the feedback clear, constructive, and concise.
     `;
 
-    const result = await model.generateContent({
+    const result = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });

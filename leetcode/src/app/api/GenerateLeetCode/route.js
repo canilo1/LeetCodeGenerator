@@ -1,11 +1,10 @@
-import  { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
+import 'dotenv/config';  // loads your .env variables automatically
 
-const ai = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
-const model = ai.getGenerativeModel({
-   model: "gemini-2.5-flash",
-})
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 export async function POST(req) {
   try {
+    console.log("Using Gemini key:", process.env.GEMINI_API_KEY ? "YES" : "NO");
     const { Pattern, Difficulty } = await req.json();
     console.log("Pattern",Pattern,"Difficulty",Difficulty)
     const difficulty = Difficulty?.trim() || "Easy";
@@ -26,7 +25,7 @@ export async function POST(req) {
 
     `;
 
-    const result = await model.generateContent({
+    const result = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: [
         { role: "user", parts: [{ text: prompt }] },
