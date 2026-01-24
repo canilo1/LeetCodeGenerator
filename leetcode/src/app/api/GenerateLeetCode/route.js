@@ -1,10 +1,13 @@
 import  { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ai = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
-
+const model = ai.getGenerativeModel({
+   model: "gemini-2.5-flash",
+})
 export async function POST(req) {
   try {
     const { Pattern, Difficulty } = await req.json();
+    console.log("Pattern",Pattern,"Difficulty",Difficulty)
     const difficulty = Difficulty?.trim() || "Easy";
 
     const prompt = `
@@ -23,7 +26,7 @@ export async function POST(req) {
 
     `;
 
-    const result = await ai.models.generateContent({
+    const result = await model.generateContent({
       model: "gemini-2.5-flash",
       contents: [
         { role: "user", parts: [{ text: prompt }] },
