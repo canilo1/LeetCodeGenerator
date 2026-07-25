@@ -1,10 +1,28 @@
+import path from "path";
+import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
-import 'dotenv/config';  // loads your .env variables automatically
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+for (const envPath of [
+  path.resolve(process.cwd(), ".env"),
+  path.resolve(process.cwd(), "..", ".env"),
+]) {
+  dotenv.config({ path: envPath });
+}
+
+const apiKey = process.env.GEMINI_API_KEY;
+console.log("This is the API key:", apiKey);
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
+
 export async function POST(req) {
   try {
-    console.log("Using Gemini key:", process.env.GEMINI_API_KEY ? "YES" : "NO");
+    console.log("Using Gemini key:", apiKey ? "YES" : "NO");
+  
+    if (!apiKey) {
+      return Response.json(
+        { error: "Missing GEMINI_API_KEY. Add it to the project .env file or the workspace root .env file." },
+        { status: 500 }``
+      );
+    }
     const { Pattern, Difficulty } = await req.json();
     console.log("Pattern",Pattern,"Difficulty",Difficulty)
     const difficulty = Difficulty?.trim() || "Easy";
