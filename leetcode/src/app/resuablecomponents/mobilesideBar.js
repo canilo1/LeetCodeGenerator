@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  Sidebar as UISidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowDown, CircleUserRoundIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import AuthSheet from "./AuthSheet";
 
 
 
@@ -56,6 +49,10 @@ export default function MobileSideBar({ handlePage }) {
            </AccordionItem>
          </Accordion>
         ))}
+      </div>
+
+      <div className="border-t border-zinc-800 bg-zinc-950 p-2 md:p-3 shrink-0">
+        <AuthSheet />
       </div>
     </div>
   );

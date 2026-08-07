@@ -7,7 +7,8 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowDown, CircleUserRoundIcon } from "lucide-react";
+import { ArrowDown } from "lucide-react";
+import AuthSheet from "./AuthSheet";
 
 export default function LCSIDEBAR({ handlePage }) {
   const items = [
@@ -53,8 +54,8 @@ export default function LCSIDEBAR({ handlePage }) {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="flex items-center gap-2 text-xs md:text-sm text-zinc-400 mt-auto pt-3 md:pt-4 border-t border-zinc-700">
-        <CircleUserRoundIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
+      <SidebarFooter className="mt-auto border-t border-zinc-700 pt-3 md:pt-4">
+        <AuthSheet />
       </SidebarFooter>
     </UISidebar>
   );

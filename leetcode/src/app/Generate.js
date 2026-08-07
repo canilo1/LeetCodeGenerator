@@ -1,6 +1,4 @@
-export async function handleAdvice({ setAdvice,question, answer }) {
-  console.log("This is the question:", question, "This is the answer:", answer);
-
+export async function handleAdvice({ setAdvice, question, answer }) {
   try {
     const response = await fetch("/api/GenerateLeetCode/LeetCodeAdvicer", {
       method: "POST",
@@ -8,36 +6,42 @@ export async function handleAdvice({ setAdvice,question, answer }) {
       body: JSON.stringify({ Answer: answer, Problem: question }),
     });
 
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
 
     const data = await response.json();
-    setAdvice(data.error ? "❌ Error: " + data.error : data.feedback);
+    const message = data.error ? `❌ Error: ${data.error}` : data.feedback || "No feedback returned.";
+    setAdvice(message);
   } catch (error) {
     console.error("Error fetching advice:", error);
-   
-  } finally {
-    
+    const message = error instanceof Error ? error.message : "Unknown error";
+    setAdvice(`❌ Unable to get feedback right now: ${message}`);
   }
 }
 
-export  async function handleGeneration({setGenerationLoading,setQuestion,Pattern,difficulty}) {
-  console.log("This is the pattern",Pattern,"This is Difficulty",difficulty)
-    setGenerationLoading(true);
-    try {
-      const response = await fetch("/api/GenerateLeetCode", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Pattern: Pattern, Difficulty: difficulty }),
-      });
+export async function handleGeneration({ setGenerationLoading, setQuestion, Pattern, difficulty, Difficulty }) {
+  setGenerationLoading(true);
 
-      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+  try {
+    const response = await fetch("/api/GenerateLeetCode", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ Pattern, difficulty: difficulty ?? Difficulty }),
+    });
 
-      const data = await response.json();
-      setQuestion(data.error ? "❌ Error: " + data.error : data.question);
-    } catch (err) {
-      console.error(err);
-      setQuestion("❌ Request failed: " + err.message);
-    } finally {
-      setGenerationLoading(false);
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
     }
+
+    const data = await response.json();
+    const message = data.error ? `❌ Error: ${data.error}` : data.question || "No question returned.";
+    setQuestion(message);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error(error);
+    setQuestion(`❌ Request failed: ${message}`);
+  } finally {
+    setGenerationLoading(false);
   }
+}

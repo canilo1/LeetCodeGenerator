@@ -9,27 +9,48 @@ for (const envPath of [
   dotenv.config({ path: envPath });
 }
 
-const apiKey = process.env.GEMINI_API_KEY;
-console.log("THis is the api key",apiKey)
-console.log("Using Gemini key:", apiKey ? "YES" : "NO");
+const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
-console.log("Using Gemini key:", apiKey ? "YES" : "NO");
+
+function extractTextFromResult(result) {
+  const parts = result?.candidates?.[0]?.content?.parts ?? [];
+  const fromParts = parts
+    .map((part) => (typeof part?.text === "string" ? part.text : ""))
+    .join("")
+    .trim();
+
+  if (fromParts) return fromParts;
+  if (typeof result?.text === "string") return result.text.trim();
+  return "";
+}
 
 export async function POST(req) {
   try {
-    console.log("Using Gemini key:", apiKey ? "YES" : "NO");
-    console.log("Request body:", await req.json());
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: "Missing GEMINI_API_KEY. Add it to the project .env file or the workspace root .env file." }),
+        JSON.stringify({ error: "Missing Gemini API key. Add GEMINI_API_KEY (or GOOGLE_API_KEY) to your .env file." }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
-    const body = await req.json();
-    const { Answer,Problem } = body;
 
-    if (!Answer) {
+    let body = {};
+    try {
+      body = await req.json();
+    } catch {
+      body = {};
+    }
+
+    const { Answer, Problem } = body;
+
+    if (!Answer || typeof Answer !== "string" || !Answer.trim()) {
       return new Response(JSON.stringify({ error: "No answer provided" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (!Problem || typeof Problem !== "string" || !Problem.trim()) {
+      return new Response(JSON.stringify({ error: "No problem provided" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -38,7 +59,7 @@ export async function POST(req) {
     const prompt = `
 You are an expert software engineer and coding interviewer.
 Here is a candidate's solution attempt:
-This is the "${Problem} and this is their "${Answer}"
+This is the "${Problem}" and this is their "${Answer}"
 
 Please provide structured feedback:
 1. Correctness — does it solve the problem?
@@ -54,7 +75,7 @@ Keep the feedback clear, constructive, and concise.
       contents: [{ role: "user", parts: [{ text: prompt }] }],
     });
 
-    const output = result?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    const output = extractTextFromResult(result);
 
     if (!output) {
       console.error("Gemini returned empty output:", JSON.stringify(result, null, 2));
@@ -68,9 +89,10 @@ Keep the feedback clear, constructive, and concise.
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (err) {
-    console.error("Gemini API Error in Advicer:", err);
-    return new Response(JSON.stringify({ error: err.message }), {
+  } catch (error) {
+    console.error("Gemini API Error in Advicer:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

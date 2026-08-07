@@ -72,7 +72,7 @@ export default function LeetCodePage({ selectedPage }) {
                   setGenerationLoading: setLoading,
                   setQuestion,
                   Pattern: selectedPage,
-                  Difficulty: difficulty,
+                  difficulty,
                 });
               } else alert("Select a difficulty first.");
             }}

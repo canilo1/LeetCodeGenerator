@@ -1,10 +1,9 @@
+import pool from "./DatabaseConnection.js";
 
+await pool.query(`
+  ALTER TABLE users
+  ADD COLUMN passwordHash VARCHAR(255);
+`);
 
-const createUsersTable = `CREATE TABLE Profile (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50),
-    email VARCHAR(100)
-    Notes 
-);`;
-
-module.exports = createUsersTable;
+console.log("passwordHash column added!");
+await pool.end();
